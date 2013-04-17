@@ -33,6 +33,8 @@ private var targetHeight = 100000.0;
 
 function Awake ()
 {
+    if (!networkView.isMine)
+        Destroy(this);
 	if(!cameraTransform && Camera.main)
 		cameraTransform = Camera.main.transform;
 	if(!cameraTransform) {

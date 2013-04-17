@@ -8,11 +8,12 @@ public class MainMenu : MonoBehaviour
 
     private int ListenPort
     {
-        get { return 11245; }
+        get { return 25000; }
     }
 
     private int localListen = -1;
     private List<ServerInfo> hosts = new List<ServerInfo>();
+    public GameObject playerPrefab;
 
     // Use this for initialization
     void Start()
@@ -24,7 +25,10 @@ public class MainMenu : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
+        {
             visible = !visible;
+            inJoinRoom = false;
+        }
     }
 
     void OnGUI()
@@ -33,7 +37,6 @@ public class MainMenu : MonoBehaviour
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
         GUILayout.BeginVertical();
-
         if (GUILayout.Button("Join Game"))
         {
             JoinGamePressed();
@@ -57,7 +60,7 @@ public class MainMenu : MonoBehaviour
             {
                 if (GUILayout.Button(si.gameName + " : " + si.IpAddress))
                 {
-                    JoinGamePressed(si);
+                    ServerButtonPressed(si);
                 }
             }
             GUILayout.EndVertical();
@@ -71,15 +74,17 @@ public class MainMenu : MonoBehaviour
         Application.ExternalCall("onFinishedLoading");
     }
 
-    private void JoinGamePressed(ServerInfo si)
+    private void ServerButtonPressed(ServerInfo si)
     {
-        Debug.Log("Connecting to " + si.IpAddress + ": " + si.port);
+        Debug.Log("Connecting to " + si.IpAddress + " : " + si.port);
         Network.Connect(si.IpAddress, si.port);
+        inJoinRoom = false;
     }
 
     private void JoinGamePressed()
     {
         hosts = StrifeMasterServer.GetMasterServerList();
+        inJoinRoom = true;
     }
 
     private void HostGamePressed()
@@ -87,10 +92,29 @@ public class MainMenu : MonoBehaviour
         localListen = ListenPort;
         Network.InitializeServer(32, localListen, false);
         visible = false;
+        var server = new GameObject("Server").AddComponent<StrifeServer>();
+        server.port = localListen;
+        server.gameName = "testGame";
+        server.gameDescription = "testGame";
+        server.gametype = "testGameType";
+    }
+
+    void OnConnectedToServer()
+    {
+        Debug.Log("Connected successfully.");
+        CreateLocalPlayerObject();
     }
 
     void OnServerInitialized()
     {
-        StrifeMasterServer.RegisterWithMasterServer(localListen, "testGame", "testGame", "TestGameType");
+        if (SystemInfo.graphicsDeviceID != 0)
+        {
+            CreateLocalPlayerObject();
+        }
+    }
+
+    private void CreateLocalPlayerObject()
+    {
+        Network.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity, int.Parse(Network.player.ToString()));
     }
 }

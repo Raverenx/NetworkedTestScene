@@ -50,8 +50,6 @@ public class StrifeServer : MonoBehaviour
         StrifeMasterServer.DeregisterWithMasterServer(this.port);
     }
 
-
-
     private void TurnOffServer()
     {
         Application.Quit();

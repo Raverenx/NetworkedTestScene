@@ -92,6 +92,8 @@ private var isControllable = true;
 
 function Awake ()
 {
+    if (!networkView.isMine)
+        Destroy(this);
 	moveDirection = transform.TransformDirection(Vector3.forward);
 	
 	_animation = GetComponent(Animation);
