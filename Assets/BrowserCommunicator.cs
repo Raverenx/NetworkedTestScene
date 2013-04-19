@@ -5,11 +5,11 @@ public class BrowserCommunicator : MonoBehaviour {
 
     IEnumerator Start()
     {
-        Application.ExternalEval("alert('Finished Loading!');");
+        Application.ExternalCall("finishedLoading");
         yield break;
     }
 
-    void ConnectToGame(string message)
+    void ConnectToServer(string message)
     {
         var split = message.Split('\n');
         var ipAddress = split[0];
