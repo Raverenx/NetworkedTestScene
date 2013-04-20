@@ -285,6 +285,7 @@ GameObject:
   - 114: {fileID: 11400002}
   - 114: {fileID: 11400000}
   - 148: {fileID: 14800000}
+  - 114: {fileID: 11400004}
   m_Layer: 0
   m_Name: 3rd Person Controller
   m_TagString: Player
@@ -2035,6 +2036,16 @@ MonoBehaviour:
 --- !u!1002 &11400003
 EditorExtensionImpl:
   serializedVersion: 6
+--- !u!114 &11400004
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 269601d65e3ea47468620c8bb89c5f5e, type: 3}
+  m_Name: 
 --- !u!137 &13700000
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

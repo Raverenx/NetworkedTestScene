@@ -115,6 +115,17 @@ public class MainMenu : MonoBehaviour
 
     private void CreateLocalPlayerObject()
     {
-        Network.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity, int.Parse(Network.player.ToString()));
+        var player = Network.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity, int.Parse(Network.player.ToString()));
+        var team = Globals.teamNumber;
+        Color color = Color.gray;
+        if (team == 2)
+        {
+            color = Color.red;
+        }
+        if (team == 1)
+        {
+            color = Color.blue;
+        }
+        ((GameObject)player).networkView.RPC("ChangeColor", RPCMode.AllBuffered, color.r, color.g, color.b);
     }
 }
