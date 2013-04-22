@@ -1,4 +1,5 @@
 ﻿public static class Globals
 {
-    public static int teamNumber = 0;
+    public static bool isHeadlessServer = false;
+    public static int listenPort = -1;
 }

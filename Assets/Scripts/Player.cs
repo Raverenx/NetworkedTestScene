@@ -2,6 +2,8 @@
 
 public class Player : MonoBehaviour
 {
+    public int team = 0;
+
     [RPC]
     public void ChangeColor(float r, float g, float b)
     {
@@ -10,5 +12,10 @@ public class Player : MonoBehaviour
         {
             renderer.material.color = new Color(r, g, b);
         }
+    }
+
+    void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo msg)
+    {
+        stream.Serialize(ref team);
     }
 }

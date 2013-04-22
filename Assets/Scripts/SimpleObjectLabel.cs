@@ -23,7 +23,6 @@ public class SimpleObjectLabel : MonoBehaviour
         thisTransform = transform;
         cam = Camera.main;
         camTransform = cam.transform;
-        offset = new Vector3(0, 3f, 0);
         if (!target)
             target = transform.root;
 
@@ -31,7 +30,7 @@ public class SimpleObjectLabel : MonoBehaviour
         {
             this.gameObject.AddComponent<GUIText>();
             guiText.font = Resources.Load("Fonts/OFLGoudyStMTT") as Font;
-            guiText.fontSize = 16;
+            guiText.fontSize = 24;
             guiText.anchor = TextAnchor.UpperCenter;
             guiText.material.color = new Color(230, 232, 250);
         }

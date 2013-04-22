@@ -18,7 +18,14 @@ public class MainMenu : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        if (!UnityEngine.Security.PrefetchSocketPolicy(StrifeMasterServer.MasterServerAddress.ToString(), 845))
+        {
+            Debug.LogError("Error prefetching socket policy.");
+        }
+        else
+        {
+            Debug.Log("Socket policy prefetched successfully.");
+        }
     }
 
     // Update is called once per frame
@@ -49,7 +56,7 @@ public class MainMenu : MonoBehaviour
         {
             TalkButtonPressed();
         }
-        
+
         GUILayout.EndVertical();
         GUILayout.FlexibleSpace();
 
@@ -76,9 +83,10 @@ public class MainMenu : MonoBehaviour
 
     private void ServerButtonPressed(ServerInfo si)
     {
-        Debug.Log("Connecting to " + si.IpAddress + " : " + si.port);
         Network.Connect(si.IpAddress, si.port);
         inJoinRoom = false;
+
+        BrowserCommunicator.ConnectToServer(si.ipAddress, si.port, -1);
     }
 
     private void JoinGamePressed()
@@ -91,32 +99,37 @@ public class MainMenu : MonoBehaviour
     {
         localListen = ListenPort;
         Network.InitializeServer(32, localListen, false);
+
+    }
+
+    void OnConnectedToServer()
+    {
+        Debug.Log("Connected successfully.");
+    }
+
+    void OnServerInitialized()
+    {
         visible = false;
         var server = new GameObject("Server").AddComponent<StrifeServer>();
         server.port = localListen;
         server.gameName = "testGame";
         server.gameDescription = "testGame";
         server.gametype = "testGameType";
-    }
-
-    void OnConnectedToServer()
-    {
-        Debug.Log("Connected successfully.");
+        PlayerPrefs.SetInt("teamNumber", 1);
         CreateLocalPlayerObject();
     }
 
-    void OnServerInitialized()
+    void OnDisconnectedFromServer()
     {
-        if (SystemInfo.graphicsDeviceID != 0)
-        {
-            CreateLocalPlayerObject();
-        }
+        Application.LoadLevel(0);
     }
 
-    private void CreateLocalPlayerObject()
+    public static MainMenu Instance { get { return GameObject.Find("MainMenu").GetComponent<MainMenu>(); } }
+
+    public void CreateLocalPlayerObject()
     {
-        var player = Network.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity, int.Parse(Network.player.ToString()));
-        var team = Globals.teamNumber;
+        var player = Network.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity, UserIdSync.userId);
+        var team = PlayerPrefs.GetInt("teamNumber");
         Color color = Color.gray;
         if (team == 2)
         {
@@ -127,5 +140,6 @@ public class MainMenu : MonoBehaviour
             color = Color.blue;
         }
         ((GameObject)player).networkView.RPC("ChangeColor", RPCMode.AllBuffered, color.r, color.g, color.b);
+        ((GameObject)player).GetComponent<Player>().team = team;
     }
 }

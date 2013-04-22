@@ -18,6 +18,8 @@ public class StrifeServer : MonoBehaviour
         this.port = port;
         this.gameName = name;
         this.gameDescription = description;
+        Globals.isHeadlessServer = true;
+        Globals.listenPort = port;
     }
 
     void Start()
@@ -38,7 +40,8 @@ public class StrifeServer : MonoBehaviour
 
     void OnPlayerDisconnected(NetworkPlayer player)
     {
-        if (Network.connections.Length == 0)
+        Debug.Log(player.externalIP + " has disconnected. There are now " + Network.connections.Length + " players connected.");
+        if (Network.connections.Length == 1 && Globals.isHeadlessServer)
         {
             TurnOffServer();
         }
