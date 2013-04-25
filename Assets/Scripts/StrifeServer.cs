@@ -14,11 +14,21 @@ public class StrifeServer : MonoBehaviour
     internal void StartHeadlessServer(int port, string name, string description)
     {
         Debug.Log("Starting headless server with name = " + name + " and description = " + description);
+        Globals.isHeadlessServer = true;
         Network.InitializeServer(20, port, false);
         this.port = port;
         this.gameName = name;
         this.gameDescription = description;
-        Globals.isHeadlessServer = true;
+        Globals.listenPort = port;
+    }
+
+    internal void StartRegularServer(int port, string name, string description)
+    {
+        Debug.Log("Starting regular server with name = " + name + " and description = " + description);
+        Network.InitializeServer(20, port, false);
+        this.port = port;
+        this.gameName = name;
+        this.gameDescription = description;
         Globals.listenPort = port;
     }
 

@@ -31,6 +31,10 @@ public class UserIdSync : MonoBehaviour {
     void OnConnectedToServer()
     {
         networkView.RPC("BroadcastUserId", RPCMode.Server, userId);
+        if (PlayerPrefs.GetInt("teamNumber", -1) != -1 && userId != -1)
+        {
+            MainMenu.Instance.CreateLocalPlayerObject();
+        }
     }
 
     void OnPlayerDisconnected(NetworkPlayer player)

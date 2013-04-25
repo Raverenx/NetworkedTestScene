@@ -18,13 +18,20 @@ public class MainMenu : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        if (!UnityEngine.Security.PrefetchSocketPolicy(StrifeMasterServer.MasterServerAddress.ToString(), 845))
+        try
         {
-            Debug.LogError("Error prefetching socket policy.");
+            if (!UnityEngine.Security.PrefetchSocketPolicy(StrifeMasterServer.MasterServerAddress.ToString(), 845))
+            {
+                Debug.LogError("Error prefetching socket policy.");
+            }
+            else
+            {
+                Debug.Log("Socket policy prefetched successfully.");
+            }
         }
-        else
+        catch (System.Exception e)
         {
-            Debug.Log("Socket policy prefetched successfully.");
+            Debug.LogWarning("Error prefetching securty policy: " + e.Message);
         }
     }
 
@@ -98,25 +105,16 @@ public class MainMenu : MonoBehaviour
     private void HostGamePressed()
     {
         localListen = ListenPort;
-        Network.InitializeServer(32, localListen, false);
-
+        visible = false;
+        var server = new GameObject("Server").AddComponent<StrifeServer>();
+        server.StartRegularServer(localListen, "testGame", "testGameDescription");
+        PlayerPrefs.SetInt("teamNumber", 1);
+        CreateLocalPlayerObject();
     }
 
     void OnConnectedToServer()
     {
         Debug.Log("Connected successfully.");
-    }
-
-    void OnServerInitialized()
-    {
-        visible = false;
-        var server = new GameObject("Server").AddComponent<StrifeServer>();
-        server.port = localListen;
-        server.gameName = "testGame";
-        server.gameDescription = "testGame";
-        server.gametype = "testGameType";
-        PlayerPrefs.SetInt("teamNumber", 1);
-        CreateLocalPlayerObject();
     }
 
     void OnDisconnectedFromServer()
